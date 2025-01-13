@@ -17,10 +17,10 @@ def play_song(song_name):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(f"ytsearch:{song_name}", download=False)
-        video_entries = info_dict.get('entries', None)[0]
         video_url = info_dict['entries'][0]['url']
+        video_title = info_dict['entries'][0]['title']
 
-    print(f'Playing: {video_entries.get('title', None)}')
+    print(f'Playing: {video_title}')
 
     # Initialize VLC media player
     player = vlc.MediaPlayer()
@@ -87,13 +87,15 @@ def download_song(song_name, download_audio=False, download_video=False):
     }
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(f"ytsearch:{song_name}", download=True)
-        print(f"Downloaded {song_name}.")
+        video_title = info_dict['entries'][0]['title']
+
+        print(f"Downloaded {video_title}.")
     if download_audio:
-        os.rename('response.mp3', f'{song_name}.mp3')
-        print(f"Audio downloaded as {song_name}.mp3")
+        os.rename('response.mp3', f'{video_title}.mp3')
+        print(f"Audio downloaded as {video_title}.mp3")
     if download_video:
-        os.rename('response.mp4', f'{song_name}.mp4')
-        print(f"Video downloaded as {song_name}.mp4")
+        os.rename('response.mp4', f'{video_title}.mp4')
+        print(f"Video downloaded as {video_title}.mp4")
 
 # Function to play the playlist
 def play_playlist():
@@ -103,7 +105,6 @@ def play_playlist():
     print("Playing playlist...")
     paused = False
     for song in playlist:
-        print(f"Now playing: {song}")
         # Use yt_dlp to fetch the song URL
         ydl_opts = {
             'quiet': True,
@@ -114,6 +115,9 @@ def play_playlist():
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info_dict = ydl.extract_info(f"ytsearch:{song}", download=False)
             video_url = info_dict['entries'][0]['url']
+            video_title = info_dict['entries'][0]['title']
+            
+        print(f"Now playing: {video_title}")
 
         # Initialize VLC media player
         player = vlc.MediaPlayer()
