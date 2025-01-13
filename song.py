@@ -8,7 +8,6 @@ playlist = []
 
 # Function to play the song
 def play_song(song_name):
-    print(f"Playing: {song_name}")
     # Use yt_dlp to fetch the song URL
     ydl_opts = {
         'quiet': True,  # Silence output from yt_dlp
@@ -18,7 +17,10 @@ def play_song(song_name):
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(f"ytsearch:{song_name}", download=False)
+        video_entries = info_dict.get('entries', None)[0]
         video_url = info_dict['entries'][0]['url']
+
+    print(f'Playing: {video_entries.get('title', None)}')
 
     # Initialize VLC media player
     player = vlc.MediaPlayer()
